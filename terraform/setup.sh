@@ -134,6 +134,33 @@ verify_cluster() {
     fi
 }
 
+patch_deployment_metrics_server() {
+    print_status "Patching deployment metrics-server by updating port to 10250..."
+
+    if command_exists kubectl; then
+        kubectl patch deployment metrics-server -n kube-system --type='json' -p='[
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/containers/0/args",
+    "value": [
+      "--cert-dir=/tmp",
+      "--secure-port=10250",
+      "--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname",
+      "--kubelet-use-node-status-port",
+      "--metric-resolution=15s"
+    ]
+  },
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/containers/0/ports/0/containerPort",
+    "value": 10250
+  }
+]'
+    else
+        print_warning "kubectl not available, skipping metrics-server patch"
+    fi
+}
+
 # Main execution
 main() {
     local action=${1:-"apply"}
@@ -171,7 +198,7 @@ main() {
             
             # Step 2: Update kubeconfig
             update_kubeconfig
-            
+
             # Step 3: Apply nodepool configuration if directory exists
             if [ "$skip_nodepool" != "true" ] && [ -d "$NODEPOOL_DIR" ]; then
                 print_status "=== Phase 2: Configuring Karpenter Nodepools ==="
@@ -183,7 +210,10 @@ main() {
             
             # Step 4: Verify cluster
             verify_cluster
-            
+
+            # Step 5: Fix metrics-server deployment
+            patch_deployment_metrics_server
+
             print_success "=== EKS Cluster Setup Complete ==="
             print_status "Cluster is ready for use!"
             ;;
