@@ -1,0 +1,85 @@
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# AWS credentials and config
+.aws/
+credentials
+config
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+#.terraform.lock.hcl
+*.tfvars.json
+
+# Kubernetes
+kubeconfig
+*.kubeconfig
+
+# Secrets
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.pfx
+*.password
+*.secret
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-*
+*.code-workspace
+.project
+.classpath
+.settings/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Shell script generated files
+*.generated.*
