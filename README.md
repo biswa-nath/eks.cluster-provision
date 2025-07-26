@@ -109,5 +109,5 @@ kubectl delete deployment inflate --ignore-not-found=true
 ## Common Configuration
 
 Both approaches use the shared Karpenter configuration from `common/karpenter-nodeclass-nodepool.yaml` which defines:
-- **EC2NodeClass**: Specifies the AMI family, instance types, and security groups
-- **NodePool**: Defines the node provisioning requirements and limits
+- **EC2NodeClass**: Specifies the AMI family, subnets, and security groups
+- **NodePool**: Defines the node provisioning requirements, instance types, capacity types, and resource limits
