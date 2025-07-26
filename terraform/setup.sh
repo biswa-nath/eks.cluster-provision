@@ -101,7 +101,7 @@ run_terraform() {
 update_kubeconfig() {
     print_status "Updating kubeconfig..."
     
-    # Get cluster name from terraform.tfvars
+    # Get cluster name from terraform output
     CLUSTER_NAME=$(terraform output -raw cluster_name 2>/dev/null || echo "default")
     #REGION=$(grep 'region' terraform.tfvars | cut -d'"' -f2 2>/dev/null || echo "us-east-2")
     
