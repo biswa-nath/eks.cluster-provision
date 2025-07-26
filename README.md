@@ -9,7 +9,7 @@ We provide two approaches for creating the EKS cluster with Karpenter:
 ## Project Structure
 
 ```
-cluster-provision/
+/
 ├── common/                           # Shared resources
 │   ├── karpenter-nodeclass-nodepool.yaml  # Karpenter EC2NodeClass and NodePool
 │   ├── env.sh                        # Environment variables
