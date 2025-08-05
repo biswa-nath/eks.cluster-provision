@@ -6,8 +6,8 @@ module "eks" {
   cluster_version                = var.kubernetes_version
   cluster_endpoint_public_access = true
 
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
+  vpc_id     = local.vpc_id
+  subnet_ids = local.private_subnet_ids
 
   # Enable OIDC provider for the cluster
   enable_irsa = true
@@ -28,7 +28,7 @@ module "eks" {
       name            = "${var.cluster_name}-ng"
       use_name_prefix = false
 
-      subnet_ids = module.vpc.private_subnets
+      subnet_ids = local.private_subnet_ids
 
       min_size     = var.node_group_min_size
       max_size     = var.node_group_max_size
