@@ -9,14 +9,21 @@ resource "aws_iam_role" "karpenter_node" {
       {
         Effect = "Allow"
         Principal = {
-          Service = "ec2.${data.aws_partition.current.dns_suffix}"
+          Service = [
+            "ec2.${data.aws_partition.current.dns_suffix}",
+            "ec2fleet.${data.aws_partition.current.dns_suffix}",
+            "spot.${data.aws_partition.current.dns_suffix}",
+            "spotfleet.${data.aws_partition.current.dns_suffix}"
+          ]
         }
         Action = "sts:AssumeRole"
       }
     ]
   })
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    "karpenter.sh/discovery" = var.cluster_name
+  })
 }
 
 # Attach required policies to Karpenter Node IAM Role
@@ -48,6 +55,24 @@ resource "aws_iam_policy" "karpenter_controller" {
     Version = "2012-10-17"
     Statement = [
       {
+        Sid    = "AllowSpotInstanceRequests"
+        Effect = "Allow"
+        Resource = "*"
+        Action = [
+          "ec2:DescribeSpotInstanceRequests",
+          "ec2:DescribeSpotFleetInstances",
+          "ec2:ModifySpotFleetRequest",
+          "ec2:CreateTags",
+          "ec2:DescribeInstances",
+          "ec2:TerminateInstances",
+          "ec2:DescribeInstanceTypes",
+          "ec2:DescribeInstanceTypeOfferings",
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeSpotPriceHistory",
+          "pricing:GetProducts"
+        ]
+      },
+      {
         Sid    = "AllowScopedEC2InstanceAccessActions"
         Effect = "Allow"
         Resource = [
@@ -55,7 +80,8 @@ resource "aws_iam_policy" "karpenter_controller" {
           "arn:${data.aws_partition.current.partition}:ec2:${var.region}::snapshot/*",
           "arn:${data.aws_partition.current.partition}:ec2:${var.region}:*:security-group/*",
           "arn:${data.aws_partition.current.partition}:ec2:${var.region}:*:subnet/*",
-          "arn:${data.aws_partition.current.partition}:ec2:${var.region}:*:capacity-reservation/*"
+          "arn:${data.aws_partition.current.partition}:ec2:${var.region}:*:capacity-reservation/*",
+          "arn:${data.aws_partition.current.partition}:ec2:${var.region}:*:spot-instances-request/*"
         ]
         Action = [
           "ec2:RunInstances",
