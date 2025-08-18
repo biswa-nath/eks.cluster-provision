@@ -59,11 +59,28 @@ cd terraform
 
 This approach:
 - Uses Terraform for Infrastructure as Code
-- Creates all AWS resources including VPC, EKS cluster, and Karpenter prerequisites
+- **Supports both new VPC creation and existing VPC usage**
+- Creates all AWS resources including VPC (if needed), EKS cluster, and Karpenter prerequisites
 - Manages the complete infrastructure lifecycle through Terraform state
 - Installs Karpenter via Helm provider
 - Applies EC2NodeClass and NodePool configurations
 - Provides better resource management and state tracking
+
+#### Using Existing VPC
+
+To use an existing VPC:
+
+1. **Update terraform.tfvars:**
+   ```hcl
+   cluster_name = "your-cluster-name"
+   create_vpc = false
+   vpc_id = "vpc-xxxxxxxxx"
+   ```
+
+2. **Deploy:**
+   ```bash
+   ./setup.sh
+   ```
 
 #### Terraform Configuration Files
 

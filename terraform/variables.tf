@@ -27,10 +27,17 @@ variable "karpenter_version" {
   default     = "1.5.2"
 }
 
-variable "vpc_cidr" {
-  description = "CIDR block for VPC"
+# Existing VPC Configuration
+variable "vpc_id" {
+  description = "ID of the existing VPC to use"
   type        = string
-  default     = "10.0.0.0/16"
+  default     = null
+}
+
+variable "vpc_cidr" {
+  description = "CIDR block for VPC when creating"
+  type        = string
+  default     = "10.211.0.0/20"
 }
 
 variable "azs" {
@@ -39,16 +46,34 @@ variable "azs" {
   default     = ["us-east-2a", "us-east-2b", "us-east-2c"]
 }
 
-variable "private_subnets" {
-  description = "Private subnets for VPC"
+variable "private_subnet_ids" {
+  description = "List of existing private subnet IDs to use"
   type        = list(string)
-  default     = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  default     = []
+}
+
+variable "public_subnet_ids" {
+  description = "List of existing public subnet IDs to use"
+  type        = list(string)
+  default     = []
+}
+
+variable "private_subnets" {
+  description = "Private subnets CIDR blocks (used when creating new VPC)"
+  type        = list(string)
+  default     = ["10.211.0.0/24", "10.211.1.0/24", "10.211.2.0/24"]
 }
 
 variable "public_subnets" {
-  description = "Public subnets for VPC"
+  description = "Public subnets CIDR blocks (used when creating new VPC)"
   type        = list(string)
-  default     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  default     = ["10.211.3.0/24", "10.211.4.0/24", "10.211.5.0/24"]
+}
+
+variable "create_vpc" {
+  description = "Whether to create a new VPC or use existing one"
+  type        = bool
+  default     = false
 }
 
 variable "node_group_instance_types" {

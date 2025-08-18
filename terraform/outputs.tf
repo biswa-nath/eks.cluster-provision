@@ -84,47 +84,47 @@ output "eks_managed_node_groups_autoscaling_group_names" {
 # VPC Outputs
 output "vpc_id" {
   description = "ID of the VPC where the cluster and its nodes will be provisioned"
-  value       = module.vpc.vpc_id
+  value       = local.vpc_id
 }
 
 output "vpc_arn" {
   description = "The ARN of the VPC"
-  value       = module.vpc.vpc_arn
+  value       = var.create_vpc ? module.vpc[0].vpc_arn : data.aws_vpc.existing[0].arn
 }
 
 output "vpc_cidr_block" {
   description = "The CIDR block of the VPC"
-  value       = module.vpc.vpc_cidr_block
+  value       = local.vpc_cidr_block
 }
 
 output "private_subnets" {
   description = "List of IDs of private subnets"
-  value       = module.vpc.private_subnets
+  value       = local.private_subnet_ids
 }
 
 output "public_subnets" {
   description = "List of IDs of public subnets"
-  value       = module.vpc.public_subnets
+  value       = local.public_subnet_ids
 }
 
 output "private_subnet_arns" {
   description = "List of ARNs of private subnets"
-  value       = module.vpc.private_subnet_arns
+  value       = var.create_vpc ? module.vpc[0].private_subnet_arns : [for subnet in data.aws_subnet.private : subnet.arn]
 }
 
 output "public_subnet_arns" {
   description = "List of ARNs of public subnets"
-  value       = module.vpc.public_subnet_arns
+  value       = var.create_vpc ? module.vpc[0].public_subnet_arns : [for subnet in data.aws_subnet.public : subnet.arn]
 }
 
 output "nat_gateway_ids" {
   description = "List of IDs of the NAT Gateways"
-  value       = module.vpc.natgw_ids
+  value       = var.create_vpc ? module.vpc[0].natgw_ids : []
 }
 
 output "internet_gateway_id" {
   description = "The ID of the Internet Gateway"
-  value       = module.vpc.igw_id
+  value       = var.create_vpc ? module.vpc[0].igw_id : null
 }
 
 # Karpenter Outputs
@@ -188,8 +188,8 @@ output "cluster_info" {
     cluster_endpoint = module.eks.cluster_endpoint
     cluster_version  = module.eks.cluster_version
     region          = var.region
-    vpc_id          = module.vpc.vpc_id
-    private_subnets = module.vpc.private_subnets
-    public_subnets  = module.vpc.public_subnets
+    vpc_id          = local.vpc_id
+    private_subnets = local.private_subnet_ids
+    public_subnets  = local.public_subnet_ids
   }
 }
