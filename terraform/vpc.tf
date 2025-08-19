@@ -46,9 +46,8 @@ data "aws_subnet" "public" {
 
 # Create new VPC if needed
 module "vpc" {
-  count   = var.create_vpc ? 1 : 0
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  count  = var.create_vpc ? 1 : 0
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-vpc.git?ref=7c1f791efd61f326ed6102d564d1a65d1eceedf0"
 
   name = "${var.cluster_name}-vpc"
   cidr = var.vpc_cidr

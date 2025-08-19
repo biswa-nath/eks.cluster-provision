@@ -1,6 +1,5 @@
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21.0"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-eks.git?ref=2cb1fac31b0fc2dd6a236b0c0678df75819c5a3b"
 
   cluster_name                   = var.cluster_name
   cluster_version                = var.kubernetes_version
@@ -77,8 +76,7 @@ module "eks" {
 
 # IAM role for EBS CSI driver
 module "ebs_csi_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks?ref=c29ec1ed409683086f63f83ff5b10a6f3c296ef2"
 
   role_name = "${var.cluster_name}-ebs-csi-driver"
 
@@ -96,8 +94,7 @@ module "ebs_csi_irsa" {
 
 # IAM role for Karpenter controller
 module "karpenter_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks?ref=c29ec1ed409683086f63f83ff5b10a6f3c296ef2"
 
   role_name                     = "${var.cluster_name}-karpenter"
   attach_karpenter_controller_policy = true
@@ -123,8 +120,7 @@ resource "aws_iam_role_policy_attachment" "karpenter_custom_policy" {
 
 # IAM role for VPC-CNI
 module "vpc_cni_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks?ref=c29ec1ed409683086f63f83ff5b10a6f3c296ef2"
 
   role_name = "${var.cluster_name}-vpc-cni"
 
