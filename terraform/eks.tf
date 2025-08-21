@@ -313,19 +313,19 @@ resource "kubernetes_config_map_v1_data" "aws_auth" {
 }
 
 # IAM role for EBS CSI driver
-module "ebs_csi_irsa" {
-  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks?ref=c29ec1ed409683086f63f83ff5b10a6f3c296ef2"
+# module "ebs_csi_irsa" {
+#   source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks?ref=c29ec1ed409683086f63f83ff5b10a6f3c296ef2"
 
-  role_name = "${var.cluster_name}-ebs-csi-driver"
+#   role_name = "${var.cluster_name}-ebs-csi-driver"
 
-  attach_ebs_csi_policy = true
+#   attach_ebs_csi_policy = true
 
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
+#   oidc_providers = {
+#     main = {
+#       provider_arn               = module.eks.oidc_provider_arn
+#       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+#     }
+#   }
 
-  tags = local.tags
-}
+#   tags = local.tags
+# }
