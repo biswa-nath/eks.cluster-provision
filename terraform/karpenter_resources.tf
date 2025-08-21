@@ -182,6 +182,32 @@ resource "aws_iam_policy" "karpenter_controller" {
   tags = local.tags
 }
 
+# IAM role for Karpenter controller
+module "karpenter_irsa" {
+  source = "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks?ref=c29ec1ed409683086f63f83ff5b10a6f3c296ef2"
+
+  role_name                     = "${var.cluster_name}-karpenter"
+  attach_karpenter_controller_policy = true
+
+  karpenter_controller_cluster_name = var.cluster_name
+  karpenter_controller_node_iam_role_arns = [aws_iam_role.karpenter_node.arn]
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["${var.karpenter_namespace}:karpenter"]
+    }
+  }
+
+  tags = local.tags
+}
+
+# Attach the custom Karpenter controller policy to the IRSA role
+resource "aws_iam_role_policy_attachment" "karpenter_custom_policy" {
+  role       = module.karpenter_irsa.iam_role_name
+  policy_arn = aws_iam_policy.karpenter_controller.arn
+}
+
 # Karpenter Interruption SQS Queue
 resource "aws_sqs_queue" "karpenter_interruption" {
   name                      = var.cluster_name

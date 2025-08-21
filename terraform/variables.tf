@@ -111,3 +111,40 @@ variable "karpenter_instance_types" {
   type        = list(string)
   default     = ["t4g.small", "t4g.medium", "t4g.large", "t4g.xlarge", "t4g.2xlarge"]
 }
+
+# EKS Endpoint Access Configuration
+variable "cluster_endpoint_public_access" {
+  description = "Enable public API server endpoint"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_endpoint_private_access" {
+  description = "Enable private API server endpoint"
+  type        = bool
+  default     = true
+}
+
+variable "cluster_endpoint_public_access_cidrs" {
+  description = "List of CIDR blocks that can access the public API server endpoint"
+  type        = list(string)
+  default     = [] # Empty list means restrict to private access only
+  validation {
+    condition = length(var.cluster_endpoint_public_access_cidrs) == 0 || !contains(var.cluster_endpoint_public_access_cidrs, "0.0.0.0/0")
+    error_message = "Public endpoint access should not include 0.0.0.0/0 for security reasons. Use specific CIDR blocks or leave empty for private access only."
+  }
+}
+
+# EKS Control Plane Logging Configuration
+variable "cluster_enabled_log_types" {
+  description = "List of control plane log types to enable. Valid values: api, audit, authenticator, controllerManager, scheduler"
+  type        = list(string)
+  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  validation {
+    condition = alltrue([
+      for log_type in var.cluster_enabled_log_types : 
+      contains(["api", "audit", "authenticator", "controllerManager", "scheduler"], log_type)
+    ])
+    error_message = "Invalid log type. Valid values are: api, audit, authenticator, controllerManager, scheduler."
+  }
+}
