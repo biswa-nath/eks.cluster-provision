@@ -174,17 +174,6 @@ output "karpenter_controller_policy_arn" {
   value       = aws_iam_policy.karpenter_controller.arn
 }
 
-# EBS CSI Driver Outputs
-output "ebs_csi_irsa_arn" {
-  description = "The Amazon Resource Name (ARN) specifying the IAM role for EBS CSI driver"
-  value       = module.ebs_csi_irsa.iam_role_arn
-}
-
-output "ebs_csi_irsa_name" {
-  description = "The name of the IAM role for EBS CSI driver"
-  value       = module.ebs_csi_irsa.iam_role_name
-}
-
 # Configuration Commands
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
