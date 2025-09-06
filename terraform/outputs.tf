@@ -19,6 +19,27 @@ output "cluster_endpoint" {
   value       = module.eks.cluster_endpoint
 }
 
+# CloudWatch Logs and KMS Outputs
+output "cloudwatch_log_group_name" {
+  description = "Name of the CloudWatch log group for EKS cluster"
+  value       = aws_cloudwatch_log_group.eks_cluster.name
+}
+
+output "cloudwatch_log_group_arn" {
+  description = "ARN of the CloudWatch log group for EKS cluster"
+  value       = aws_cloudwatch_log_group.eks_cluster.arn
+}
+
+output "cloudwatch_logs_kms_key_id" {
+  description = "KMS key ID used for CloudWatch logs encryption"
+  value       = aws_kms_key.cloudwatch_logs.key_id
+}
+
+output "cloudwatch_logs_kms_key_arn" {
+  description = "KMS key ARN used for CloudWatch logs encryption"
+  value       = aws_kms_key.cloudwatch_logs.arn
+}
+
 output "cluster_version" {
   description = "The Kubernetes version for the EKS cluster"
   value       = module.eks.cluster_version
@@ -151,28 +172,6 @@ output "karpenter_node_iam_role_arn" {
 output "karpenter_controller_policy_arn" {
   description = "The ARN of the Karpenter controller policy"
   value       = aws_iam_policy.karpenter_controller.arn
-}
-
-# EBS CSI Driver Outputs
-output "ebs_csi_irsa_arn" {
-  description = "The Amazon Resource Name (ARN) specifying the IAM role for EBS CSI driver"
-  value       = module.ebs_csi_irsa.iam_role_arn
-}
-
-output "ebs_csi_irsa_name" {
-  description = "The name of the IAM role for EBS CSI driver"
-  value       = module.ebs_csi_irsa.iam_role_name
-}
-
-# VPC CNI Outputs
-output "vpc_cni_irsa_arn" {
-  description = "The Amazon Resource Name (ARN) specifying the IAM role for VPC CNI"
-  value       = module.vpc_cni_irsa.iam_role_arn
-}
-
-output "vpc_cni_irsa_name" {
-  description = "The name of the IAM role for VPC CNI"
-  value       = module.vpc_cni_irsa.iam_role_name
 }
 
 # Configuration Commands
